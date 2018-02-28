@@ -56,7 +56,7 @@ public interface EzUploaderStatus {
     /**
      * Error code when upload is cancelled.
      */
-    int ERROR_upload_CANCELLED = 2002;
+    int ERROR_UPLOAD_CANCELLED = 2002;
     
     
 }

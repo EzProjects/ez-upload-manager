@@ -48,12 +48,6 @@ public class EzUploaderRequest {
         this.mFilePath = filePath;
         mUploadState = EzUploaderStatus.STATUS_PENDING;
 
-//        String scheme = uri.getScheme();
-//        if (scheme == null || (!scheme.equals("http") && !scheme.equals("https"))) {
-//            throw new IllegalArgumentException("Can only upload HTTP/HTTPS URIs: " + uri);
-//        }
-//        mCustomHeader = new HashMap<>();
-//        mDestinationURI = uri;
     }
 
 

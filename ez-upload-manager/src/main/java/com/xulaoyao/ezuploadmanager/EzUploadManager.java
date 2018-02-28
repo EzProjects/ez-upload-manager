@@ -44,6 +44,17 @@ public class EzUploadManager implements IEzUploaderListener {
         mUploaderRequestQueue.start();
     }
 
+    /**
+     * 构造 外部上传实现
+     *
+     * @param ezUploaderExecute
+     */
+    public EzUploadManager(IEzUploaderExecute ezUploaderExecute) {
+        mUploaderRequestQueue = new EzUploaderRequestQueue(ezUploaderExecute);
+        mUploaderRequestQueue.start();
+    }
+
+
     @Override
     public int add(EzUploaderRequest request) throws IllegalArgumentException {
         checkReleased("add(...) called on a released UploadManager.");

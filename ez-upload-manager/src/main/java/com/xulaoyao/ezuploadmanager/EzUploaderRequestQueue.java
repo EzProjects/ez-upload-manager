@@ -32,6 +32,8 @@ public class EzUploaderRequestQueue {
     private EzUploaderDispatcher[] mUploadDispatchers;
     //回调
     private CallBackDelivery mDelivery;
+    //外部上传实现
+    private IEzUploaderExecute mUploaderExecute;
 
     //获取队列 id
     private AtomicInteger mSequenceGenerator = new AtomicInteger();
@@ -65,15 +67,22 @@ public class EzUploaderRequestQueue {
         initialize(callbackHandler);
     }
 
+    public EzUploaderRequestQueue(IEzUploaderExecute ezUploaderExecute) {
+        initialize(new Handler(Looper.getMainLooper()), ezUploaderExecute);
+    }
 
+
+    /**
+     * 通过 PriorityBlockingQueue 建立线程池
+     */
     public void start() {
         stop();  //确保所有线程中的任务全部退出
 
         // 创建上传线程池
         for (int i = 0; i < mUploadDispatchers.length; i++) {
-            EzUploaderDispatcher uploaderDispatcher = new EzUploaderDispatcher(mUploaderQueue, mDelivery);
+            EzUploaderDispatcher uploaderDispatcher = new EzUploaderDispatcher(mUploaderQueue, mDelivery, mUploaderExecute);
             mUploadDispatchers[i] = uploaderDispatcher;
-            uploaderDispatcher.start();
+            uploaderDispatcher.start();  //开启线程 start
         }
     }
 
@@ -246,6 +255,17 @@ public class EzUploaderRequestQueue {
     private void initialize(Handler callbackHandler, int threadPoolSize) {
         mUploadDispatchers = new EzUploaderDispatcher[threadPoolSize];
         mDelivery = new CallBackDelivery(callbackHandler);
+    }
+
+    /**
+     * @param callbackHandler
+     * @param ezUploaderExecute
+     */
+    private void initialize(Handler callbackHandler, IEzUploaderExecute ezUploaderExecute) {
+        int processors = Runtime.getRuntime().availableProcessors();
+        mUploadDispatchers = new EzUploaderDispatcher[processors];
+        mDelivery = new CallBackDelivery(callbackHandler);
+        mUploaderExecute = ezUploaderExecute;
     }
 
     /**
